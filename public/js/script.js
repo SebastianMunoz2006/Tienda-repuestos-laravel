@@ -17,13 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, false);
     });
     
-    // Manejar cantidades en el carrito
-    var quantityInputs = document.querySelectorAll('.quantity-input');
-    quantityInputs.forEach(function(input) {
-        input.addEventListener('change', function() {
-            if (this.value < 1) {
-                this.value = 1;
-            }
-        });
-    });
+    // ELIMINADO el manejo de cantidades para evitar conflictos
+    // Este código ahora está en la sección @section('scripts') del blade
 });

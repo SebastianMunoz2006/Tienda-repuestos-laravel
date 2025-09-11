@@ -27,7 +27,7 @@ body::before {
     --primary-color: #6b46c1;
     --primary-dark: #553c9a;
     --primary-darker: #44337a;
-    --secondary-color: #718096;
+    --secondary-color: #4a5568; /* Cambiado a gris más oscuro para mejor contraste */
     --accent-color: #9f7aea;
     --accent-light: #d6bcfa;
     --success-color: #38a169;
@@ -133,6 +133,27 @@ body::before {
     box-shadow: 0 8px 25px rgba(107, 70, 193, 0.3);
 }
 
+/* BOTÓN VOLVER A PRODUCTOS - CORREGIDO */
+.btn-volver {
+    display: inline-block;
+    padding: 12px 30px;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    background-color: white;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.btn-volver:hover {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-darker));
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(107, 70, 193, 0.3);
+}
+
 /* Cards con efecto de elevación */
 .card {
     border: none;
@@ -233,7 +254,7 @@ body::before {
     font-weight: 500;
 }
 
-/* Features */
+/* Features - MEJORADO CONTRASTE */
 .feature-item {
     padding: 2rem 1rem;
     text-align: center;
@@ -258,12 +279,14 @@ body::before {
 
 .feature-item h5 {
     font-weight: 600;
-    color: var(--dark-color);
+    color: var(--dark-color); /* Mejor contraste */
     margin-bottom: 0.5rem;
+    font-size: 1.25rem;
 }
 
 .feature-item p {
-    color: var(--secondary-color);
+    color: var(--secondary-color); /* Mejor contraste */
+    line-height: 1.6;
 }
 
 /* Badges */
@@ -296,6 +319,157 @@ body::before {
     height: 3px;
     background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
     border-radius: 3px;
+}
+/* ===== ESTRUCTURA DE SECCIONES Y SEPARACIÓN ===== */
+
+/* Contenedor principal para detalles de producto */
+.product-detail-container {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 15px;
+    padding: 2rem;
+    margin: 2rem 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(107, 70, 193, 0.1);
+}
+
+/* Separador de secciones */
+.section-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+    margin: 2.5rem 0;
+    border: none;
+}
+
+/* Footer mejorado con separación */
+.footer {
+    background: linear-gradient(135deg, var(--primary-darker) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 3rem 0 1.5rem;
+    margin-top: 4rem;
+    border-top: 3px solid var(--accent-color);
+}
+
+.footer-section {
+    margin-bottom: 2rem;
+}
+
+.footer h5 {
+    color: white;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    border-bottom: 2px solid var(--accent-light);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-links a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: block;
+    padding: 0.25rem 0;
+}
+
+.footer-links a:hover {
+    color: white;
+    transform: translateX(5px);
+}
+
+.contact-info {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.contact-info p {
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.contact-info i {
+    color: var(--accent-light);
+    width: 20px;
+}
+
+.copyright {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Tarjeta de producto mejorada */
+.product-card-detailed {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+    border: 1px solid rgba(107, 70, 193, 0.1);
+}
+
+/* Formulario de cantidad y botones */
+.quantity-form {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: rgba(107, 70, 193, 0.05);
+    border-radius: 10px;
+}
+
+.quantity-input {
+    width: 80px;
+    padding: 0.5rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 5px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.btn-add-to-cart {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    flex: 1;
+}
+
+.btn-add-to-cart:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(107, 70, 193, 0.3);
+}
+
+/* Grid para detalles del producto */
+.product-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .quantity-form {
+        flex-direction: column;
+    }
 }
 
 /* Ajustes responsivos */
@@ -354,7 +528,6 @@ body::before {
 }
 
 .mt-5 {
-    
     margin-top: 3rem !important;
 }
 
@@ -364,4 +537,197 @@ body::before {
 
 .fw-bold {
     font-weight: 700 !important;
+}
+
+/* CARRITO - CORREGIDO */
+.cart-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cart-count {
+    background-color: #e53e3e;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+/* ESTILOS PARA BOTONES DEL CARRITO - CORREGIDOS */
+.increase-quantity, .decrease-quantity {
+    background-color: #6b46c1 !important;
+    color: white !important;
+    border: 1px solid #6b46c1 !important;
+    padding: 0.375rem 0.75rem;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.increase-quantity:hover, .decrease-quantity:hover {
+    background-color: #553c9a !important;
+    border-color: #553c9a !important;
+}
+
+.quantity-input {
+    border-left: 1px solid #dee2e6 !important;
+    border-right: 1px solid #dee2e6 !important;
+    text-align: center;
+}
+
+/* Asegurar que los botones sean visibles */
+.input-group .btn {
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1;
+}
+
+/* Contador del carrito en navbar */
+.cart-count {
+    background-color: #e53e3e;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+/* BOTONES DE CANTIDAD VISIBLES Y FUNCIONALES */
+.increase-quantity, .decrease-quantity {
+    background-color: #6b46c1 !important;
+    color: white !important;
+    border: 1px solid #6b46c1 !important;
+    padding: 0.5rem 0.75rem;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transition: all 0.3s ease;
+}
+
+.increase-quantity:hover, .decrease-quantity:hover {
+    background-color: #553c9a !important;
+    border-color: #553c9a !important;
+    color: white !important;
+    transform: scale(1.05);
+}
+
+.quantity-input {
+    border-left: 1px solid #dee2e6 !important;
+    border-right: 1px solid #dee2e6 !important;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Asegurar que los botones sean visibles */
+.input-group .btn {
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1;
+}
+
+/* Iconos dentro de los botones */
+.increase-quantity i, .decrease-quantity i {
+    font-size: 0.875rem;
+}
+/* BOTONES DE CANTIDAD - ESTILOS MEJORADOS */
+.increase-quantity, .decrease-quantity {
+    background-color: #6b46c1 !important;
+    color: white !important;
+    border: 1px solid #6b46c1 !important;
+    padding: 0.5rem 0.75rem !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transition: all 0.3s ease !important;
+}
+
+.increase-quantity:hover, .decrease-quantity:hover {
+    background-color: #553c9a !important;
+    border-color: #553c9a !important;
+    color: white !important;
+    transform: scale(1.05) !important;
+}
+
+.quantity-input {
+    border-left: 1px solid #e6dede !important;
+    border-right: 1px solid #dee2e6 !important;
+    text-align: center !important;
+    font-weight: 600 !important;
+}
+
+/* Asegurar que los botones sean visibles */
+.input-group .btn {
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1 !important;
+}
+
+/* Iconos dentro de los botones */
+.increase-quantity i, .decrease-quantity i {
+    font-size: 0.875rem !important;
+    display: block !important;
+}
+
+/* Forzar visibilidad de iconos FontAwesome */
+.fa-plus, .fa-minus {
+    display: inline-block !important;
+    font-family: 'Font Awesome 6 Free' !important;
+    font-weight: 900 !important;
+}
+/* ESTILOS MEJORADOS PARA BOTONES DE CANTIDAD - GARANTIZAR FUNCIONALIDAD */
+.input-group .btn {
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 5 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+}
+
+.increase-quantity, .decrease-quantity {
+    background-color: #6b46c1 !important;
+    color: white !important;
+    border: 1px solid #6b46c1 !important;
+    padding: 0.5rem 0.75rem !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transition: all 0.3s ease !important;
+    cursor: pointer !important;
+    z-index: 5 !important;
+}
+
+.increase-quantity:hover, .decrease-quantity:hover {
+    background-color: #553c9a !important;
+    border-color: #553c9a !important;
+    color: white !important;
+    transform: scale(1.05) !important;
+}
+
+/* Ocultar flechas de input number en todos los navegadores */
+.quantity-input::-webkit-outer-spin-button,
+.quantity-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.quantity-input {
+    -moz-appearance: textfield;
+    appearance: textfield;
+    border-left: 1px solid #dee2e6 !important;
+    border-right: 1px solid #dee2e6 !important;
+    text-align: center !important;
+}
+
+/* Asegurar que los iconos de FontAwesome sean visibles */
+.increase-quantity i, .decrease-quantity i {
+    font-size: 0.875rem !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
 }

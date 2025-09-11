@@ -47,8 +47,7 @@
         </form>
         @endif
         
-        <div class="mt-4">
-            <a href="{{ route('products.index') }}" class="btn btn-outline-secondary">Volver a Productos</a>
+        <div class="mt-4"><a href="{{ route('products.index') }}" class="btn-volver">Volver a Productos</a>
         </div>
     </div>
 </div>

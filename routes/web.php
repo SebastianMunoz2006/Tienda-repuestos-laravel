@@ -15,11 +15,12 @@ Route::get('/products/category/{category_id}', [ProductController::class, 'byCat
 Route::get('/products/search', [ProductController::class, 'search'])->name('products.search');
 Route::get('/product/{id}', [ProductController::class, 'show'])->name('products.show');
 
-// Rutas del carrito
+// Rutas del carrito (CORREGIDAS - métodos HTTP correctos)
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
-Route::get('/cart/remove/{product_id}', [CartController::class, 'remove'])->name('cart.remove');
-Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/cart/remove/{product_id}', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/update-quantity/{product_id}', [CartController::class, 'updateQuantity'])->name('cart.update.quantity');
+Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
 // Rutas de autenticación
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
