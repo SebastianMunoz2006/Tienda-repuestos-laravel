@@ -203,10 +203,14 @@ class CartController extends Controller
         
         // Para solicitudes AJAX
         if ($request->ajax() || $request->wantsJson()) {
+            $subtotalCOP = $subtotal * 4200;
+            $totalCOP = $total * 4200;
             return response()->json([
                 'success' => true,
-                'subtotal' => number_format($subtotal, 2),
-                'total' => number_format($total, 2),
+                'subtotal' => round($subtotal, 2),
+                'total' => round($total, 2),
+                'subtotal_cop' => round($subtotalCOP),
+                'total_cop' => round($totalCOP),
                 'items_count' => $items_count,
                 'product_id' => $product_id,
                 'product_price' => $product->price,

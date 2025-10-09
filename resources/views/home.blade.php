@@ -39,7 +39,7 @@
             </div>
             <div class="col-md-3">
                 <div class="stat-item">
-                    <h3 class="text-primary fw-bold">6</h3>
+                    <h3 class="text-primary fw-bold">7</h3>
                     <p class="text-muted">Categorías</p>
                 </div>
             </div>
@@ -118,9 +118,14 @@
                     <div class="card-body">
                         <h5 class="card-title fw-bold text-dark">{{ $product->name }}</h5>
                         <p class="card-text text-muted">{{ Str::limit($product->description, 80) }}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="h5 text-primary fw-bold mb-0">${{ number_format($product->price, 2) }}</span>
-                            <span class="badge bg-secondary">{{ $product->brand }}</span>
+                        <div class="price-container">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="h5 text-primary fw-bold mb-0 price-usd">${{ number_format($product->price, 2) }} USD</span>
+                                <span class="badge bg-secondary">{{ $product->brand }}</span>
+                            </div>
+                            <div class="text-start">
+                                <small class="price-cop fw-bold">${{ number_format($product->price * 4200, 0, ',', '.') }} COP</small>
+                            </div>
                         </div>
                     </div>
                     <div class="card-footer bg-white border-0">

@@ -52,8 +52,13 @@
                                 </div>
                             </td>
                             <td class="align-middle">
-                                <span class="price" data-price="{{ $item['price'] }}">${{ number_format($item['price'], 2) }}</span>
-                          <td class="align-middle">
+                                <div class="price-container">
+                                    <span class="price-usd fw-bold" data-price="{{ $item['price'] }}">${{ number_format($item['price'], 2) }} USD</span>
+                                    <br>
+                                    <small class="price-cop">${{ number_format($item['price'] * 4200, 0, ',', '.') }} COP</small>
+                                </div>
+                            </td>
+                            <td class="align-middle">
     <div class="input-group" style="max-width: 130px;">
         <button class="btn decrease-quantity quantity-btn" type="button" data-id="{{ $item['id'] }}">
             <i class="fas fa-minus"></i>
@@ -75,7 +80,11 @@
     @endif
 </td>
                             <td class="align-middle">
-                                <span class="subtotal fw-bold" data-id="{{ $item['id'] }}">${{ number_format($item['total'], 2) }}</span>
+                                <div class="price-container">
+                                    <span class="subtotal fw-bold price-usd" data-id="{{ $item['id'] }}">${{ number_format($item['total'], 2) }} USD</span>
+                                    <br>
+                                    <small class="price-cop">${{ number_format($item['total'] * 4200, 0, ',', '.') }} COP</small>
+                                </div>
                             </td>
                             <td class="align-middle">
                                 <form action="{{ route('cart.remove', $item['id']) }}" method="POST" class="d-inline">
@@ -113,19 +122,31 @@
                             
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Subtotal:</span>
-                                <span class="fw-bold" id="cart-subtotal">${{ number_format($total, 2) }}</span>
+                                <div class="text-end">
+                                    <span class="fw-bold price-usd" id="cart-subtotal">${{ number_format($total, 2) }} USD</span>
+                                    <br>
+                                    <small class="price-cop">${{ number_format($total * 4200, 0, ',', '.') }} COP</small>
+                                </div>
                             </div>
                             
-                            <div classd-flex justify-content-between mb-2">
+                            <div class="d-flex justify-content-between mb-2">
                                 <span>Envío:</span>
-                                <span class="fw-bold" id="shipping-cost">$0.00</span>
+                                <div class="text-end">
+                                    <span class="fw-bold price-usd" id="shipping-cost">$0.00 USD</span>
+                                    <br>
+                                    <small class="price-cop">$0 COP</small>
+                                </div>
                             </div>
                             
                             <hr>
                             
                             <div class="d-flex justify-content-between mb-3">
                                 <strong>Total:</strong>
-                                <strong class="text-success" id="cart-total">${{ number_format($total, 2) }}</strong>
+                                <div class="text-end">
+                                    <strong class="text-success price-usd" id="cart-total">${{ number_format($total, 2) }} USD</strong>
+                                    <br>
+                                    <small class="price-cop">${{ number_format($total * 4200, 0, ',', '.') }} COP</small>
+                                </div>
                             </div>
                             
                             @auth
@@ -203,36 +224,51 @@ function showNotification(message, type = 'success') {
     }, 5000);
 }
 
-// Función para actualizar el precio en el frontend
-function updatePrice(productId, newSubtotal, newTotal) {
-    console.log('Actualizando precios:', {productId, newSubtotal, newTotal});
-    
+// Función auxiliar para formatear números con comas
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+// Función para actualizar el precio en el frontend (VERSIÓN ACTUALIZADA PARA USD Y COP)
+function updatePrice(productId, newSubtotal, newTotal, newSubtotalCOP, newTotalCOP) {
+    // Subtotal por producto
     const subtotalElement = document.querySelector(`.subtotal[data-id="${productId}"]`);
-    const cartSubtotalElement = document.getElementById('cart-subtotal');
-    const cartTotalElement = document.getElementById('cart-total');
-    
     if (subtotalElement) {
-        // Actualizar subtotal del producto
-        subtotalElement.textContent = '$' + newSubtotal;
-        subtotalElement.classList.add('text-success', 'fw-bold');
-        
-        // Quitar la clase de énfasis después de 1 segundo
-        setTimeout(() => {
-            subtotalElement.classList.remove('text-success');
-        }, 1000);
+        subtotalElement.textContent = '$' + numberWithCommas(newSubtotal) + ' USD';
+        // Busca el elemento COP dentro del mismo price-container
+        const priceContainer = subtotalElement.closest('.price-container');
+        if (priceContainer) {
+            const copElement = priceContainer.querySelector('.price-cop');
+            if (copElement) {
+                copElement.textContent = '$' + numberWithCommas(newSubtotalCOP) + ' COP';
+            }
+        }
     }
-    
-    // Actualizar totales
+
+    // Subtotal general
+    const cartSubtotalElement = document.getElementById('cart-subtotal');
     if (cartSubtotalElement) {
-        cartSubtotalElement.textContent = '$' + newTotal;
-        cartSubtotalElement.classList.add('text-success');
-        setTimeout(() => cartSubtotalElement.classList.remove('text-success'), 1000);
+        cartSubtotalElement.textContent = '$' + numberWithCommas(newTotal) + ' USD';
+        const priceContainer = cartSubtotalElement.closest('.text-end');
+        if (priceContainer) {
+            const copSubtotal = priceContainer.querySelector('.price-cop');
+            if (copSubtotal) {
+                copSubtotal.textContent = '$' + numberWithCommas(newTotalCOP) + ' COP';
+            }
+        }
     }
-    
+
+    // Total general
+    const cartTotalElement = document.getElementById('cart-total');
     if (cartTotalElement) {
-        cartTotalElement.textContent = '$' + newTotal;
-        cartTotalElement.classList.add('text-success');
-        setTimeout(() => cartTotalElement.classList.remove('text-success'), 1000);
+        cartTotalElement.textContent = '$' + numberWithCommas(newTotal) + ' USD';
+        const priceContainer = cartTotalElement.closest('.text-end');
+        if (priceContainer) {
+            const copTotal = priceContainer.querySelector('.price-cop');
+            if (copTotal) {
+                copTotal.textContent = '$' + numberWithCommas(newTotalCOP) + ' COP';
+            }
+        }
     }
 }
 
@@ -271,8 +307,7 @@ async function updateQuantity(productId, newQuantity) {
         console.log('Respuesta del servidor:', data);
 
         if (data.success) {
-            // Actualizar precios en el frontend
-            updatePrice(productId, data.subtotal, data.total);
+            updatePrice(productId, data.subtotal, data.total, data.subtotal_cop, data.total_cop);
             showNotification('Cantidad actualizada correctamente');
             
             // Actualizar contador del carrito
@@ -325,8 +360,18 @@ document.querySelectorAll('.remove-item-ajax').forEach(btn => {
 
                 // Actualizar totales
                 if (data.total !== undefined) {
-                    document.getElementById('cart-subtotal').textContent = '$' + data.total;
-                    document.getElementById('cart-total').textContent = '$' + data.total;
+                    document.getElementById('cart-subtotal').textContent = '$' + data.total + ' USD';
+                    document.getElementById('cart-total').textContent = '$' + data.total + ' USD';
+                    
+                    // Actualizar COP también
+                    const copSubtotal = document.getElementById('cart-subtotal').nextElementSibling;
+                    const copTotal = document.getElementById('cart-total').nextElementSibling;
+                    if (copSubtotal && copSubtotal.classList.contains('price-cop')) {
+                        copSubtotal.textContent = '$' + numberWithCommas((data.total * 4200).toFixed(0)) + ' COP';
+                    }
+                    if (copTotal && copTotal.classList.contains('price-cop')) {
+                        copTotal.textContent = '$' + numberWithCommas((data.total * 4200).toFixed(0)) + ' COP';
+                    }
                 }
 
                 showNotification('Producto eliminado del carrito', 'danger');
@@ -357,8 +402,19 @@ if (clearCartForm) {
             if (data.success) {
                 // Vaciar la tabla y actualizar totales
                 document.getElementById('cart-items').innerHTML = '';
-                document.getElementById('cart-subtotal').textContent = '$0.00';
-                document.getElementById('cart-total').textContent = '$0.00';
+                document.getElementById('cart-subtotal').textContent = '$0.00 USD';
+                document.getElementById('cart-total').textContent = '$0.00 USD';
+                
+                // Actualizar COP también
+                const copSubtotal = document.getElementById('cart-subtotal').nextElementSibling;
+                const copTotal = document.getElementById('cart-total').nextElementSibling;
+                if (copSubtotal && copSubtotal.classList.contains('price-cop')) {
+                    copSubtotal.textContent = '$0 COP';
+                }
+                if (copTotal && copTotal.classList.contains('price-cop')) {
+                    copTotal.textContent = '$0 COP';
+                }
+                
                 showNotification('Carrito vaciado correctamente', 'warning');
             } else {
                 showNotification('Error al vaciar el carrito', 'danger');

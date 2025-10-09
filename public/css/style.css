@@ -731,3 +731,174 @@ body::before {
     width: 100% !important;
     height: 100% !important;
 }
+/* ===== ESTILOS PARA PAGINACIÓN PERSONALIZADA ===== */
+.custom-pagination {
+    display: flex !important;
+    gap: 0.5rem !important;
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    align-items: center !important;
+}
+
+.custom-pagination .page-item .page-link {
+    padding: 0.75rem 1.25rem !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    color: #4a5568 !important;
+    background: white !important;
+    text-decoration: none !important;
+    min-width: 50px !important;
+    height: 50px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05) !important;
+}
+
+.custom-pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #6b46c1, #553c9a) !important;
+    border-color: #6b46c1 !important;
+    color: white !important;
+    box-shadow: 0 4px 10px rgba(107, 70, 193, 0.3) !important;
+}
+
+.custom-pagination .page-item .page-link:hover {
+    background: linear-gradient(135deg, #6b46c1, #553c9a) !important;
+    border-color: #6b46c1 !important;
+    color: white !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 5px 15px rgba(107, 70, 193, 0.3) !important;
+}
+
+.custom-pagination .page-item.disabled .page-link {
+    background: #f7fafc !important;
+    color: #a0aec0 !important;
+    border-color: #e2e8f0 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.custom-pagination .page-item.disabled .page-link:hover {
+    background: #f7fafc !important;
+    color: #a0aec0 !important;
+    border-color: #e2e8f0 !important;
+    transform: none !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .custom-pagination {
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 0.25rem !important;
+    }
+    
+    .custom-pagination .page-item .page-link {
+        padding: 0.6rem 1rem !important;
+        min-width: 45px !important;
+        height: 45px !important;
+        font-size: 0.9rem !important;
+    }
+}
+/* ===== ESTILOS PARA PRECIOS EN DÓLARES Y PESOS COLOMBIANOS ===== */
+.price-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.price-usd {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.price-cop {
+    font-size: 1rem; /* Casi del mismo tamaño que USD */
+    font-weight: 700; /* Misma negrita */
+    color: #256f3a; /* Verde un poco más oscuro para mejor contraste */
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* Para la vista de carrito - Tamaños más parejos */
+.cart-table .price-usd {
+    font-size: 1.05rem;
+}
+
+.cart-table .price-cop {
+    font-size: 0.95rem; /* Muy cercano al USD */
+}
+
+/* Para el resumen del carrito */
+.text-end .price-usd {
+    font-size: 1.05rem;
+}
+
+.text-end .price-cop {
+    font-size: 0.95rem; /* Casi mismo tamaño */
+}
+
+/* Efectos de transición para actualizaciones */
+.price-usd, .price-cop {
+    transition: all 0.3s ease;
+}
+
+/* Estilo para cuando se actualizan los precios */
+.price-updated {
+    animation: priceHighlight 0.6s ease;
+}
+
+@keyframes priceHighlight {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .price-usd {
+        font-size: 1.05rem;
+    }
+    
+    .price-cop {
+        font-size: 1rem; /* En móvil, mismo tamaño */
+    }
+    
+    .cart-table .price-usd {
+        font-size: 1rem;
+    }
+    
+    .cart-table .price-cop {
+        font-size: 0.95rem;
+    }
+    
+    .text-end .price-usd {
+        font-size: 1rem;
+    }
+    
+    .text-end .price-cop {
+        font-size: 0.95rem;
+    }
+}
+
+/* Para pantallas muy pequeñas */
+@media (max-width: 480px) {
+    .price-usd {
+        font-size: 1rem;
+    }
+    
+    .price-cop {
+        font-size: 0.95rem;
+    }
+    
+    .price-container {
+        gap: 0.1rem;
+    }
+}

@@ -54,7 +54,14 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ $product->name }}</h5>
                             <p class="card-text">{{ Str::limit($product->description, 100) }}</p>
-                            <p class="card-text"><strong>${{ number_format($product->price, 2) }}</strong></p>
+                            <div class="price-container">
+                                <p class="card-text mb-1">
+                                    <strong class="price-usd">${{ number_format($product->price, 2) }} USD</strong>
+                                </p>
+                                <p class="card-text mb-0">
+                                    <small class="price-cop">${{ number_format($product->price * 4200, 0, ',', '.') }} COP</small>
+                                </p>
+                            </div>
                             <p class="card-text"><small class="text-muted">Marca: {{ $product->brand }}</small></p>
                         </div>
                         <div class="card-footer bg-white">
@@ -80,10 +87,83 @@
         </div>
         
         @if($products->count() > 0)
-        <div class="d-flex justify-content-center mt-4">
-            {{ $products->links() }}
-        </div>
-        @endif
+<div class="d-flex justify-content-center mt-4">
+    <nav aria-label="Page navigation">
+        <ul class="pagination custom-pagination mb-0">
+            {{-- Previous Page Link --}}
+            @if ($products->onFirstPage())
+                <li class="page-item disabled">
+                    <span class="page-link">‹ Anterior</span>
+                </li>
+            @else
+                <li class="page-item">
+                    <a class="page-link" href="{{ $products->previousPageUrl() }}">‹ Anterior</a>
+                </li>
+            @endif
+
+            {{-- Pagination Numbers --}}
+            @php
+                $current = $products->currentPage();
+                $last = $products->lastPage();
+                $start = max(1, $current - 2);
+                $end = min($last, $current + 2);
+            @endphp
+
+            @if($start > 1)
+                <li class="page-item">
+                    <a class="page-link" href="{{ $products->url(1) }}">1</a>
+                </li>
+                @if($start > 2)
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                @endif
+            @endif
+
+            @for ($page = $start; $page <= $end; $page++)
+                @if ($page == $current)
+                    <li class="page-item active">
+                        <span class="page-link">{{ $page }}</span>
+                    </li>
+                @else
+                    <li class="page-item">
+                        <a class="page-link" href="{{ $products->url($page) }}">{{ $page }}</a>
+                    </li>
+                @endif
+            @endfor
+
+            @if($end < $last)
+                @if($end < $last - 1)
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                @endif
+                <li class="page-item">
+                    <a class="page-link" href="{{ $products->url($last) }}">{{ $last }}</a>
+                </li>
+            @endif
+
+            {{-- Next Page Link --}}
+            @if ($products->hasMorePages())
+                <li class="page-item">
+                    <a class="page-link" href="{{ $products->nextPageUrl() }}">Siguiente ›</a>
+                </li>
+            @else
+                <li class="page-item disabled">
+                    <span class="page-link">Siguiente ›</span>
+                </li>
+            @endif
+        </ul>
+    </nav>
+</div>
+
+{{-- Información de paginación --}}
+<div class="text-center mt-2">
+    <small class="text-muted">
+        Mostrando {{ $products->firstItem() }} a {{ $products->lastItem() }} de {{ $products->total() }} resultados
+    </small>
+</div>
+@endif
     </div>
 </div>
 @endsection
