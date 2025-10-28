@@ -4,6 +4,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommentController; // <-- Añade el controlador de comentarios
 use Illuminate\Support\Facades\Route;
 
 // Página de inicio
@@ -21,6 +22,9 @@ Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::delete('/cart/remove/{product_id}', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/cart/update-quantity/{product_id}', [CartController::class, 'updateQuantity'])->name('cart.update.quantity');
 Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+
+// Rutas de comentarios
+Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
 
 // Rutas de autenticación
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');

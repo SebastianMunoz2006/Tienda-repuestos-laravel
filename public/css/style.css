@@ -902,3 +902,8 @@ body::before {
         gap: 0.1rem;
     }
 }
+.text-purple { color: #6b46c1; }
+.card-header.bg-gradient {
+    background: linear-gradient(135deg, #6b46c1 70%, #d6bcfa 100%) !important;
+    color: #fff !important;
+}
