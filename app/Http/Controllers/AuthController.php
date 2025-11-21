@@ -61,9 +61,8 @@ class AuthController extends Controller
             'phone' => $request->phone
         ]);
 
-        Auth::login($user);
-
-        return redirect('/')->with('success', '¡Cuenta creada exitosamente!');
+        // Usuario creado exitosamente, redirigir al login
+        return redirect()->route('login')->with('success', '¡Cuenta creada exitosamente! Por favor inicia sesión.');
     }
 
     public function logout(Request $request)

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Order;
+use App\Models\OrderDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -233,5 +235,129 @@ class CartController extends Controller
         }
 
         return redirect()->route('cart.index')->with('success', 'Carrito vaciado correctamente');
+    }
+
+    // ========== MÉTODOS DE CHECKOUT (AGREGAR AL FINAL) ==========
+
+    public function checkout()
+    {
+        $cart = session()->get('cart', []);
+        
+        if (empty($cart)) {
+            return redirect()->route('cart.index')->with('error', 'Tu carrito está vacío');
+        }
+        
+        $products = [];
+        $subtotal = 0;
+
+        foreach ($cart as $product_id => $quantity) {
+            $product = Product::find($product_id);
+            if ($product) {
+                $itemTotal = $product->price * $quantity;
+                $subtotal += $itemTotal;
+
+                $products[] = [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'price' => $product->price,
+                    'quantity' => $quantity,
+                    'total' => $itemTotal,
+                    'image' => $product->image,
+                    'brand' => $product->brand
+                ];
+            }
+        }
+
+        $tax = $subtotal * 0.19; // 19% de IVA
+        $total = $subtotal + $tax;
+
+        return view('cart.checkout', compact('products', 'subtotal', 'tax', 'total'));
+    }
+
+    public function confirmOrder(Request $request)
+    {
+        // Validar los datos del formulario
+        $request->validate([
+            'customer_name' => 'required|string|max:255',
+            'customer_email' => 'required|email',
+            'customer_phone' => 'required|string|max:20',
+            'shipping_address' => 'required|string|max:500',
+            'payment_method' => 'required|string',
+        ]);
+
+        // Obtener el carrito
+        $cart = session()->get('cart', []);
+        
+        if (empty($cart)) {
+            return redirect()->route('cart.index')->with('error', 'Tu carrito está vacío');
+        }
+
+        // Calcular totales
+        $subtotal = 0;
+        $products = [];
+
+        foreach ($cart as $product_id => $quantity) {
+            $product = Product::find($product_id);
+            if ($product) {
+                $itemTotal = $product->price * $quantity;
+                $subtotal += $itemTotal;
+
+                $products[] = [
+                    'product' => $product,
+                    'quantity' => $quantity,
+                    'subtotal' => $itemTotal
+                ];
+            }
+        }
+
+        $tax = $subtotal * 0.19;
+        $total = $subtotal + $tax;
+
+        // Crear el pedido en la base de datos
+        try {
+            $order = Order::create([
+                'user_id' => auth()->id(),
+                'customer_name' => $request->customer_name,
+                'customer_email' => $request->customer_email,
+                'customer_phone' => $request->customer_phone,
+                'shipping_address' => $request->shipping_address,
+                'payment_method' => $request->payment_method,
+                'subtotal' => $subtotal,
+                'tax' => $tax,
+                'total' => $total,
+                'status' => 'pending'
+            ]);
+
+            // Crear los detalles del pedido
+            foreach ($products as $item) {
+                OrderDetail::create([
+                'order_id' => $order->id,
+                'product_id' => $item['product']->id,
+                'product_name' => $item['product']->name,
+                'price' => $item['product']->price,
+                'quantity' => $item['quantity'],
+                'subtotal' => $item['subtotal']
+            ]);
+
+                // Actualizar el stock del producto
+                $item['product']->decrement('stock', $item['quantity']);
+            }
+
+            // Limpiar el carrito después de la compra
+            session()->forget('cart');
+
+            return redirect()->route('cart.success')->with([
+                'success' => 'Pedido confirmado exitosamente',
+                'order_id' => $order->id
+            ]);
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error al procesar el pedido: ' . $e->getMessage());
+        }
+    }
+
+    public function success()
+    {
+        return view('cart.success');
     }
 }

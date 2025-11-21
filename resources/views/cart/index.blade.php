@@ -150,7 +150,8 @@
                             </div>
                             
                             @auth
-                                <a href="#" class="btn btn-success w-100">
+                                <!-- BOTÓN MODIFICADO: Ahora redirige al checkout -->
+                                <a href="{{ route('cart.checkout') }}" class="btn btn-success w-100">
                                     <i class="fas fa-credit-card me-2"></i> Proceder al Pago
                                 </a>
                             @else
