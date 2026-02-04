@@ -4,6 +4,15 @@
 
 @section('content')
 <div class="container py-4">
+    <!-- Aviso de Modo Administrador -->
+    @if(auth()->check() && (auth()->user()->hasRole('admin') || auth()->user()->hasRole('jefe')))
+    <div class="d-flex justify-content-center mb-4">
+        <span class="badge fs-6 p-3 admin-mode-badge">
+            <i class="fas fa-user-shield me-2"></i> Modo Administrador Activado
+        </span>
+    </div>
+    @endif
+
     <div class="row">
         <div class="col-md-8">
             <h2 class="mb-4">Confirmar Pedido</h2>
@@ -62,20 +71,20 @@
                                     <div id="nequi_info" style="display: none;">
                                         <div class="alert alert-light border">
                                             <p class="mb-2"><strong>📱 Realiza el pago a nuestro Nequi:</strong></p>
-                                            <p class="mb-1"><strong>Número:</strong> <span class="text-primary">300 123 4567</span></p>
+                                            <p class="mb-1"><strong>Número:</strong> <span class="text-primary">318 250 8979</span></p>
                                             <p class="mb-1"><strong>Nombre:</strong> AutorepuestosPro</p>
                                             <p class="mb-0"><strong>Referencia:</strong> <span class="badge bg-primary" id="nequi_reference"></span></p>
                                         </div>
-                                        <small class="text-muted">Una vez realizado el pago, guarda el comprobante.</small>
+                                        <small class="text-muted"><b>Una vez estas aqui, guarda captura de pantalla de esta seccion y el comprobante de pago. Asi se facilitara el proceso de entrega del pedido.</b></small>
                                     </div>
                                     <div id="cash_info" style="display: none;">
                                         <div class="alert alert-light border">
                                             <p class="mb-2"><strong>💰 Pago en Efectivo:</strong></p>
-                                            <p class="mb-1"><strong>Dirección:</strong> Calle 123 #45-67, Bogotá, Colombia</p>
+                                            <p class="mb-1"><strong>Dirección:</strong> Cra. 5 #13-56, Puerto Boyacá, Boyacá, Colombia</p>
                                             <p class="mb-1"><strong>Horario:</strong> Lunes a Viernes 8:00 AM - 6:00 PM</p>
                                             <p class="mb-0"><strong>Sábados:</strong> 9:00 AM - 2:00 PM</p>
                                         </div>
-                                        <small class="text-muted">Trae tu número de pedido para facilitar el proceso.</small>
+                                        <small class="text-muted"><b>Una vez estas aqui, guarda captura de pantalla de esta seccion y el comprobante de pago. Asi se facilitara el proceso de entrega del pedido.</b></small>
                                     </div>
                                 </div>
                             </div>
@@ -171,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
         else if (method === 'cash') {
             paymentInstructions.style.display = 'block';
             paymentTitle.textContent = '💰 Instrucciones para pago en Efectivo';
-            paymentDescription.textContent = 'Puedes acercarte a nuestra tienda física para realizar el pago:';
+            paymentDescription.textContent = 'Puedes acercarte a nuestra tienda física para realizar el pago, O puedes pagar en contra entrega:';
             nequiInfo.style.display = 'none';
             cashInfo.style.display = 'block';
         }

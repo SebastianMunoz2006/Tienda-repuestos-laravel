@@ -4,6 +4,15 @@
 
 @section('content')
 <div class="container py-4">
+    <!-- Aviso de Modo Administrador -->
+    @if(auth()->check() && (auth()->user()->hasRole('admin') || auth()->user()->hasRole('jefe')))
+    <div class="d-flex justify-content-center mb-4">
+        <span class="badge fs-6 p-3 admin-mode-badge">
+            <i class="fas fa-user-shield me-2"></i> Modo Administrador Activado
+        </span>
+    </div>
+    @endif
+
     <div class="row">
         <div class="col-md-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -109,17 +118,60 @@
                             </div>
 
                             <div class="mt-4">
-                                <div class="alert alert-info">
+                                <div class="alert alert-light border">
                                     <p class="mb-0 small">
-                                        <strong>Estado:</strong> 
-                                        <span class="badge bg-{{ $order->status == 'completed' ? 'success' : 'warning' }}">
-                                            {{ $order->status == 'pending' ? 'Pendiente' : 'Completado' }}
-                                        </span>
+                                        <strong>Estado del Pedido:</strong>
+                                        @if($order->status == 'pending')
+                                            <span class="badge bg-warning">⏳ Pendiente</span>
+                                        @elseif($order->status == 'processing')
+                                            <span class="badge bg-info">🔄 En proceso</span>
+                                        @elseif($order->status == 'delivered')
+                                            <span class="badge bg-primary">📦 Enviado</span>
+                                        @elseif($order->status == 'completed')
+                                            <span class="badge bg-success">✅ Confirmado</span>
+                                        @else
+                                            <span class="badge bg-secondary">{{ ucfirst($order->status) }}</span>
+                                        @endif
                                     </p>
-                                    <p class="mb-0 small mt-1">
+                                    <p class="mb-0 small mt-2">
                                         <strong>Fecha del pedido:</strong> {{ $order->created_at->format('d/m/Y H:i') }}
                                     </p>
                                 </div>
+
+                                {{-- Mostrar estado del envío y acciones --}}
+                                @if(auth()->check() && auth()->id() == $order->user_id)
+                                    @if($order->status == 'delivered')
+                                    <div class="alert alert-info mt-3 border-start border-4 border-info">
+                                        <i class="fas fa-truck me-2"></i>
+                                        <strong>¡Tu pedido ha llegado!</strong>
+                                        <p class="mt-2 mb-0">Por favor confirma que recibiste tu pedido.</p>
+                                    </div>
+                                    <form action="{{ route('orders.confirm-delivery', $order->id) }}" method="POST" class="mt-2">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success btn-lg w-100">
+                                            <i class="fas fa-check-circle me-2"></i>Confirmar que recibí el pedido
+                                        </button>
+                                    </form>
+                                    @elseif($order->status == 'completed')
+                                    <div class="alert alert-success mt-3 border-start border-4 border-success">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        <strong>¡Pedido Confirmado!</strong>
+                                        <p class="mt-2 mb-0">Gracias por verificar tu compra. Si tienes algún problema, contáctanos.</p>
+                                    </div>
+                                    @elseif($order->status == 'pending')
+                                    <div class="alert alert-warning mt-3 border-start border-4 border-warning">
+                                        <i class="fas fa-hourglass-start me-2"></i>
+                                        <strong>Pedido Pendiente</strong>
+                                        <p class="mt-2 mb-0">Estamos preparando tu pedido. Te notificaremos cuando esté en camino.</p>
+                                    </div>
+                                    @elseif($order->status == 'processing')
+                                    <div class="alert alert-info mt-3 border-start border-4 border-info">
+                                        <i class="fas fa-cogs me-2"></i>
+                                        <strong>En Proceso</strong>
+                                        <p class="mt-2 mb-0">Tu pedido se está preparando. Pronto estará listo para enviar.</p>
+                                    </div>
+                                    @endif
+                                @endif
                             </div>
                         </div>
                     </div>

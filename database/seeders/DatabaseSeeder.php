@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CategorySeeder::class, // Primero categorías
             ProductSeeder::class,   // Luego productos
+            RoleSeeder::class,      // ← AÑADÍ ESTA LÍNEA (roles y permisos)
         ]);
     }
 }

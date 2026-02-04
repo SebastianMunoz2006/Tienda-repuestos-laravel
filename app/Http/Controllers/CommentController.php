@@ -6,15 +6,23 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function store(Request $request)
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
-            'user_name' => 'required|string|max:100',
             'content' => 'required|string|max:500',
         ]);
 
-        Comment::create($request->only('product_id', 'user_name', 'content'));
+        Comment::create([
+            'product_id' => $request->product_id,
+            'user_name' => auth()->user()->name,
+            'content' => $request->content,
+        ]);
 
         return back()->with('success', 'Comentario enviado correctamente.');
     }

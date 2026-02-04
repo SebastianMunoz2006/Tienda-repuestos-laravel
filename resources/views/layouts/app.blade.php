@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', config('app.name'))</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -27,22 +28,85 @@
                         <a class="nav-link {{ request()->is('products*') ? 'active' : '' }}" href="{{ route('products.index') }}">Productos</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {{ request()->is('my-orders*') ? 'active' : '' }}" href="{{ url('/my-orders') }}">
+                            <i class="fas fa-clipboard-list"></i> Mis Pedidos
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link cart-link {{ request()->is('cart*') ? 'active' : '' }}" href="{{ route('cart.index') }}">
                             <i class="fas fa-shopping-cart"></i> Carrito 
                             <span class="cart-count">{{ count(session('cart', [])) }}</span>
                         </a>
                     </li>
+                    {{-- Menú Admin/Jefe --}}
+                    @if(auth()->check() && (auth()->user()->hasRole('admin') || auth()->user()->hasRole('jefe')))
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('admin/orders*') ? 'active' : '' }}" href="{{ route('admin.orders.index') }}">
+                            <i class="fas fa-boxes"></i> Gestionar Pedidos
+                        </a>
+                    </li>
+                    @endif
                 </ul>
                 <ul class="navbar-nav">
                     @auth
-                        <li class="nav-item">
-                            <span class="nav-link">Hola, {{ Auth::user()->name }}</span>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('logout') }}" 
-                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                Cerrar Sesión
+                        {{-- Notificaciones dropdown --}}
+                        <li class="nav-item dropdown me-2">
+                            <a class="nav-link position-relative" href="#" id="notifDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-bell"></i>
+                                @php $unread = auth()->user()->unreadNotifications->count(); @endphp
+                                @if($unread > 0)
+                                    <span class="badge bg-danger position-absolute notif-count" style="top:0;right:0;transform:translate(30%,-30%);">{{ $unread }}</span>
+                                @endif
                             </a>
+                            <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="notifDropdown" style="min-width:320px;">
+                                <div id="notif-list">
+                                @forelse(auth()->user()->unreadNotifications as $notification)
+                                    <li class="dropdown-item notif-item" data-id="{{ $notification->id }}">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <div class="small text-muted">{{ $notification->created_at->diffForHumans() }}</div>
+                                                <div class="fw-semibold">{{ $notification->data['message'] ?? 'Nuevo evento' }}</div>
+                                                <div class="small text-muted">Total: ${{ number_format($notification->data['total'] ?? 0, 2) }}</div>
+                                            </div>
+                                            <div class="ms-2">
+                                                <button type="button" class="btn btn-sm btn-outline-primary mark-notif-btn" data-id="{{ $notification->id }}">Marcar</button>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                @empty
+                                    <li class="dropdown-item text-center small text-muted notif-empty">Sin nuevas notificaciones</li>
+                                @endforelse
+                                </div>
+                                <li class="mt-2 text-center">
+                                    <button type="button" class="btn btn-sm btn-link mark-all-notif-btn">Marcar todas como leídas</button>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle me-1"></i>{{ Auth::user()->name }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                                        <i class="fas fa-user me-2"></i>Mi Perfil
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('orders.index') }}">
+                                        <i class="fas fa-history me-2"></i>Mis Pedidos
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('logout') }}" 
+                                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                                    </a>
+                                </li>
+                            </ul>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                 @csrf
                             </form>
@@ -96,13 +160,14 @@
                     <ul class="list-unstyled">
                         <li><a href="{{ url('/') }}">Inicio</a></li>
                         <li><a href="{{ route('products.index') }}">Productos</a></li>
+                        <li><a href="{{ url('/my-orders') }}">Mis Pedidos</a></li>
                         <li><a href="#">Contacto</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
                     <h5>Contacto</h5>
                     <p><i class="fas fa-map-marker-alt"></i> Cra. 5 #13-56, Puerto Boyacá, Boyacá</p>
-                    <p><i class="fas fa-phone"></i> (123) 456-7890</p>
+                    <p><i class="fas fa-phone"></i> 318 250 8979</p>
                     <p><i class="fas fa-envelope"></i> info@autorepuestospro.com</p>
                 </div>
             </div>
@@ -113,7 +178,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('js/script.js') }}"></script>
-    @yield('scripts')  <!-- AGREGA ESTA LÍNEA -->
+    @yield('scripts')
 
     <script>
     // Función para mostrar notificaciones destacadas
@@ -145,6 +210,79 @@
             }
         }, 5000);
     }
+
+    // AJAX para marcar notificación individual como leída
+    document.querySelectorAll('.mark-notif-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const notifId = this.dataset.id;
+            const notifItem = document.querySelector(`[data-id="${notifId}"]`);
+
+            fetch(`{{ url('/notifications') }}/${notifId}/mark-read`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    // Remover la notificación y el hr del dropdown
+                    if(notifItem) {
+                        const hr = notifItem.nextElementSibling;
+                        notifItem.remove();
+                        if(hr && hr.tagName === 'HR') hr.remove();
+                    }
+
+                    // Actualizar contador
+                    const countEl = document.querySelector('.notif-count');
+                    if(data.unread_count > 0) {
+                        if(countEl) countEl.textContent = data.unread_count;
+                    } else {
+                        if(countEl) countEl.remove();
+                        // Mostrar "Sin nuevas notificaciones"
+                        const list = document.getElementById('notif-list');
+                        if(list && !list.querySelector('.notif-empty')) {
+                            const empty = document.createElement('li');
+                            empty.className = 'dropdown-item text-center small text-muted notif-empty';
+                            empty.textContent = 'Sin nuevas notificaciones';
+                            list.appendChild(empty);
+                        }
+                    }
+                }
+            })
+            .catch(err => console.error('Error marcando notificación:', err));
+        });
+    });
+
+    // AJAX para marcar todas como leídas
+    document.querySelector('.mark-all-notif-btn')?.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        fetch('{{ route("notifications.markAllRead") }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                // Remover todas las notificaciones
+                const list = document.getElementById('notif-list');
+                list.innerHTML = '<li class="dropdown-item text-center small text-muted notif-empty">Sin nuevas notificaciones</li>';
+
+                // Remover badge de contador
+                const countEl = document.querySelector('.notif-count');
+                if(countEl) countEl.remove();
+            }
+        })
+        .catch(err => console.error('Error marcando todas:', err));
+    });
     </script>
 
     <style>

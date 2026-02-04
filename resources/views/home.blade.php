@@ -3,6 +3,15 @@
 @section('title', 'Inicio - ' . config('app.name'))
 
 @section('content')
+<!-- Aviso de Modo Administrador -->
+@if(auth()->check() && (auth()->user()->hasRole('admin') || auth()->user()->hasRole('jefe')))
+<div class="d-flex justify-content-center mb-4 mt-3">
+    <span class="badge fs-6 p-3 admin-mode-badge">
+        <i class="fas fa-user-shield me-2"></i> Modo Administrador Activado
+    </span>
+</div>
+@endif
+
 <!-- Hero Section Mejorado -->
 <section class="hero-section py-5 mb-5">
     <div class="container">

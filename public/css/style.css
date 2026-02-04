@@ -194,10 +194,10 @@ body::before {
 }
 
 .product-image {
-    height: 200px;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-    width: 100%;
+    max-height: 500px !important;
+    height: auto !important;
+    object-fit: contain !important;
+    width: 100% !important;
 }
 
 .product-card:hover .product-image {
@@ -906,4 +906,121 @@ body::before {
 .card-header.bg-gradient {
     background: linear-gradient(135deg, #6b46c1 70%, #d6bcfa 100%) !important;
     color: #fff !important;
+}
+
+/* Estilos para badge de Modo Administrador - Tamaño consistente y notorio */
+.admin-mode-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.25rem !important;
+    font-size: 1rem !important;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.8);
+    cursor: pointer;
+    min-width: max-content;
+    border-radius: 8px;
+    background-color: #7c3aed !important;
+    color: white !important;
+    border: 2px solid #6d28d9 !important;
+    animation: pulse-admin-badge 1.5s infinite;
+}
+
+.admin-mode-badge i {
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+}
+
+@keyframes pulse-admin-badge {
+    0%, 100% { 
+        box-shadow: 0 0 20px rgba(124, 58, 237, 0.8), 0 0 40px rgba(124, 58, 237, 0.4);
+    }
+    50% { 
+        box-shadow: 0 0 40px rgba(124, 58, 237, 1), 0 0 80px rgba(124, 58, 237, 0.6);
+    }
+}
+
+.admin-mode-badge:hover {
+    transform: scale(1.1) translateY(-3px);
+    box-shadow: 0 10px 30px rgba(107, 70, 193, 0.6);
+    background-color: #5a38a8 !important;
+    color: white !important;
+}
+
+/* Estilos para botón de Nuevo Producto */
+.btn-create-product {
+    background: linear-gradient(135deg, #38a169 0%, #2d7c4a 100%);
+    border: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    color: white !important;
+}
+
+.btn-create-product:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(56, 161, 105, 0.5);
+    background: linear-gradient(135deg, #2d7c4a 0%, #1f5c35 100%);
+    color: white !important;
+}
+
+.btn-create-product:active {
+    transform: translateY(0);
+    color: white !important;
+}
+
+/* Estilos para imágenes de productos - Tamaño consistente */
+.product-card img,
+.product-image {
+    width: 100% !important;
+    height: 250px !important;
+    object-fit: cover !important;
+    border-radius: 8px 8px 0 0;
+}
+
+/* Imagen en el carrito */
+.cart-item-image,
+.cart-item img {
+    width: 60px !important;
+    height: 60px !important;
+    object-fit: cover !important;
+}
+
+/* Imagen en show del producto */
+.product-show-image {
+    width: 100% !important;
+    max-height: 400px !important;
+    height: auto !important;
+    object-fit: cover !important;
+}
+
+/* Estilos para categorías en sidebar */
+.category-list-item {
+    background: linear-gradient(135deg, #ffffff 0%, #e9d5f8 100%);
+    border-radius: 8px !important;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+    border: 2px solid transparent !important;
+    color: var(--primary-color) !important;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.category-list-item i {
+    font-size: 1.1rem;
+}
+
+.category-list-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(107, 70, 193, 0.2);
+    border-color: var(--primary-color) !important;
+}
+
+.category-list-item.active {
+    background: linear-gradient(135deg, #6b46c1 0%, #553c9a 100%) !important;
+    color: white !important;
+    border-color: var(--primary-darker) !important;
 }

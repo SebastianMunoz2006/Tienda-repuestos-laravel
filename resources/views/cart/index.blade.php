@@ -4,6 +4,15 @@
 
 @section('content')
 <div class="container py-4">
+    <!-- Aviso de Modo Administrador -->
+    @if(auth()->check() && (auth()->user()->hasRole('admin') || auth()->user()->hasRole('jefe')))
+    <div class="d-flex justify-content-center mb-4">
+        <span class="badge fs-6 p-3 admin-mode-badge">
+            <i class="fas fa-user-shield me-2"></i> Modo Administrador Activado
+        </span>
+    </div>
+    @endif
+
     <h2 class="mb-4">Carrito de Compras</h2>
     
     @if(session('success'))
@@ -43,7 +52,7 @@
                                          alt="{{ $item['name'] }}" 
                                          width="60" 
                                          height="60" 
-                                         class="rounded me-3" 
+                                         class="rounded me-3 cart-item-image" 
                                          style="object-fit: cover;">
                                     <div>
                                         <h6 class="mb-1">{{ $item['name'] }}</h6>

@@ -10,10 +10,12 @@
                 <h5>Categorías</h5>
             </div>
             <div class="list-group list-group-flush">
-                <a href="{{ route('products.index') }}" class="list-group-item list-group-item-action">Todas las categorías</a>
+                <a href="{{ route('products.index') }}" class="list-group-item list-group-item-action category-list-item">
+                    <i class="fas fa-list me-2"></i>Todas las categorías
+                </a>
                 @foreach($categories as $categoryItem)
-                <a href="{{ route('products.category', $categoryItem->id) }}" class="list-group-item list-group-item-action {{ isset($category) && $category->id == $categoryItem->id ? 'active' : '' }}">
-                    {{ $categoryItem->name }}
+                <a href="{{ route('products.category', $categoryItem->id) }}" class="list-group-item list-group-item-action category-list-item {{ isset($category) && $category->id == $categoryItem->id ? 'active' : '' }}">
+                    <i class="fas fa-tag me-2"></i>{{ $categoryItem->name }}
                 </a>
                 @endforeach
             </div>
@@ -35,22 +37,44 @@
     </div>
     
     <div class="col-md-9">
-        <h2 class="mb-4">
-            @if(isset($category))
-                Productos - {{ $category->name }}
-            @elseif(isset($keywords))
-                Resultados de búsqueda: "{{ $keywords }}"
-            @else
-                Todos los Productos
-            @endif
-        </h2>
+        <div class="mb-4">
+            <h2 class="text-center mb-4">
+                @if(isset($category))
+                    Productos - {{ $category->name }}
+                @elseif(isset($keywords))
+                    Resultados de búsqueda: "{{ $keywords }}"
+                @else
+                    Todos los Productos
+                @endif
+            </h2>
+            
+            <div class="d-flex justify-content-between align-items-center gap-3">
+                @can('crear productos')
+                <div>
+                    <a href="{{ route('products.create') }}" class="btn btn-create-product">
+                        <i class="fas fa-plus me-2"></i> Nuevo Producto
+                    </a>
+                </div>
+                @else
+                <div></div>
+                @endcan
+                
+                @if(auth()->check() && (auth()->user()->hasRole('admin') || auth()->user()->hasRole('jefe')))
+                <div>
+                    <span class="badge fs-6 p-3 admin-mode-badge">
+                        <i class="fas fa-user-shield me-2"></i> Modo Administrador Activado
+                    </span>
+                </div>
+                @endif
+            </div>
+        </div>
         
         <div class="row">
             @if($products->count() > 0)
                 @foreach($products as $product)
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="card h-100">
-                        <img src="{{ asset('images/' . ($product->image ?: 'default-product.jpg')) }}" class="card-img-top" alt="{{ $product->name }}">
+                        <img src="{{ asset('images/' . ($product->image ?: 'default-product.jpg')) }}" class="card-img-top product-image" alt="{{ $product->name }}">
                         <div class="card-body">
                             <h5 class="card-title">{{ $product->name }}</h5>
                             <p class="card-text">{{ Str::limit($product->description, 100) }}</p>
@@ -65,15 +89,67 @@
                             <p class="card-text"><small class="text-muted">Marca: {{ $product->brand }}</small></p>
                         </div>
                         <div class="card-footer bg-white">
-                            <a href="{{ route('products.show', $product->id) }}" class="btn btn-primary">Ver Detalles</a>
-                            @if($product->stock > 0)
-                            <form action="{{ route('cart.add') }}" method="POST" class="d-inline">
-                                @csrf
-                                <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                <button type="submit" class="btn btn-success"><i class="fas fa-cart-plus"></i></button>
-                            </form>
+                            @if(auth()->check() && (auth()->user()->hasRole('admin') || auth()->user()->hasRole('jefe')))
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <a href="{{ route('products.show', $product->id) }}" class="btn btn-primary w-100" style="height: 50px;">
+                                            <i class="fas fa-eye me-1"></i> Ver Producto
+                                        </a>
+                                    </div>
+                                    <div class="col-12">
+                                        @can('editar productos')
+                                        <a href="{{ route('products.edit', $product->id) }}" class="btn btn-warning w-100" style="height: 50px;">
+                                            <i class="fas fa-edit me-1"></i> Editar
+                                        </a>
+                                        @else
+                                        <div class="invisible" style="height: 50px;">Placeholder</div>
+                                        @endcan
+                                    </div>
+                                    <div class="col-12">
+                                        @can('eliminar productos')
+                                        <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="w-100" 
+                                              onsubmit="return confirm('¿Está seguro de eliminar este producto?\n\nProducto: {{ $product->name }}\n\nEsta acción no se puede deshacer.');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger w-100" style="height: 50px;">
+                                                <i class="fas fa-trash me-1"></i> Eliminar
+                                            </button>
+                                        </form>
+                                        @else
+                                        <div class="invisible" style="height: 50px;">Placeholder</div>
+                                        @endcan
+                                    </div>
+                                    <div class="col-12">
+                                        @if($product->stock > 0)
+                                        <form action="{{ route('cart.add') }}" method="POST" class="w-100">
+                                            @csrf
+                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                            <button type="submit" class="btn btn-success w-100" style="height: 50px;">
+                                                <i class="fas fa-cart-plus me-1"></i> Añadir al Carro
+                                            </button>
+                                        </form>
+                                        @else
+                                        <button class="btn btn-secondary w-100" disabled style="height: 50px;">Agotado</button>
+                                        @endif
+                                    </div>
+                                </div>
                             @else
-                            <button class="btn btn-secondary" disabled>Agotado</button>
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <a href="{{ route('products.show', $product->id) }}" class="btn btn-primary w-100" style="height: 50px;">Ver Detalles</a>
+                                    </div>
+                                    <div class="col-12">
+                                        @if($product->stock > 0)
+                                        <form action="{{ route('cart.add') }}" method="POST" class="w-100">
+                                            @csrf
+                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                            <button type="submit" class="btn btn-success w-100" style="height: 50px;"><i class="fas fa-cart-plus me-1"></i> Añadir al Carro</button>
+                                        </form>
+                                        @else
+                                        <button class="btn btn-secondary w-100" disabled style="height: 50px;">Agotado</button>
+                                        @endif
+                                    </div>
+                                </div>
                             @endif
                         </div>
                     </div>

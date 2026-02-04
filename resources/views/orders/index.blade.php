@@ -4,6 +4,15 @@
 
 @section('content')
 <div class="container py-4">
+    <!-- Aviso de Modo Administrador -->
+    @if(auth()->check() && (auth()->user()->hasRole('admin') || auth()->user()->hasRole('jefe')))
+    <div class="d-flex justify-content-center mb-4">
+        <span class="badge fs-6 p-3 admin-mode-badge">
+            <i class="fas fa-user-shield me-2"></i> Modo Administrador Activado
+        </span>
+    </div>
+    @endif
+
     <div class="row">
         <div class="col-md-12">
             <div class="d-flex justify-content-between align-items-center mb-4">

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\User;
+use App\Notifications\OrderPlaced;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -345,6 +347,17 @@ class CartController extends Controller
 
             // Limpiar el carrito después de la compra
             session()->forget('cart');
+
+            // Notificar a los usuarios con rol 'jefe' (si existen)
+            try {
+                $jefes = User::role('jefe')->get();
+                foreach ($jefes as $jefe) {
+                    $jefe->notify(new OrderPlaced($order));
+                }
+            } catch (\Exception $e) {
+                // No bloquear el flujo si la notificación falla
+                Log::error('Error notificando a jefes: ' . $e->getMessage());
+            }
 
             return redirect()->route('cart.success')->with([
                 'success' => 'Pedido confirmado exitosamente',
